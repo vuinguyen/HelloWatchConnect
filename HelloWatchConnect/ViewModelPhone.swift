@@ -17,6 +17,7 @@ protocol printEnum {
 enum PhoneState: printEnum {
     case notreachable
     case reachable
+    case loggedIn
 
     var description: String {
         switch self {
@@ -24,6 +25,8 @@ enum PhoneState: printEnum {
             return "Not Reachable"
         case .reachable:
             return "Reachable"
+        case .loggedIn:
+            return "Logged In"
         }
     }
 }
@@ -65,6 +68,14 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     }
 }
 
+
+extension ViewModelPhone {
+    func sessionReachabilityDidChange(_ session: WCSession) {
+        DispatchQueue.main.async {
+            self.phoneState = session.isReachable ? .reachable : .notreachable
+        }
+    }
+}
 
 extension ViewModelPhone {
     func isReachable() -> Bool {
