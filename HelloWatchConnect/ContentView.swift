@@ -39,6 +39,7 @@ struct LoginView: View {
     var body: some View {
         VStack {
             TextField("Enter Password", text: $messageText)
+                .disabled(self.model.phoneState != .reachable)
             Button(action: {
                 if let session = self.model.session {
                     session.sendMessage(["message" : self.messageText], replyHandler: nil) { (error) in
