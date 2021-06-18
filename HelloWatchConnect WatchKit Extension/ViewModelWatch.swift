@@ -30,4 +30,12 @@ class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
         }
     }
 
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+        //
+        DispatchQueue.main.async {
+            self.messageText = message["message"] as? String ?? "Unknown"
+            replyHandler(message)
+        }
+    }
+
 }
