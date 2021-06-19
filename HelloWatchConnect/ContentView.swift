@@ -43,23 +43,36 @@ struct LoginView: View {
             Button(action: {
                 // Do when in reachable state
                 if self.model.phoneState == .reachable, let session = self.model.session {
-                    session.sendMessage(["message" : self.messageText], replyHandler: { (reply) in
+                    session.sendMessage(["login" : self.messageText], replyHandler: { (reply) in
                         // confirm that message was received on watch side
-                        if reply["message"] != nil {
-                            self.model.logInLogout()
+                        if reply["login"] != nil {
+                            clearTextBoxChangeLogStatus()
                         }
                     }, errorHandler: { (error) in
                         print(error.localizedDescription)
                     })
                 // Do when logged in
-                } else {
-                    messageText = ""
-                    self.model.logInLogout()
+                } else if self.model.phoneState == .loggedIn, let session = self.model.session {
+                    session.sendMessage(["logout" : true], replyHandler: { (reply) in
+                        // confirm that message was received on watch side
+                        if let didLogout = reply["logout"] as? Bool {
+                            if didLogout {
+                                clearTextBoxChangeLogStatus()
+                            }
+                        }
+                    }, errorHandler: { (error) in
+                        print(error.localizedDescription)
+                    })
                 }
 
             }) {
                 Text(self.model.phoneState == .loggedIn ? "Logout" : "Login")
             }
         }
+    }
+
+    func clearTextBoxChangeLogStatus() {
+        messageText = ""
+        self.model.logInLogout()
     }
 }
