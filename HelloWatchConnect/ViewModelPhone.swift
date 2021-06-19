@@ -87,7 +87,7 @@ extension ViewModelPhone {
         return reachable
     }
 
-    func logInLogout(reply: [String:Any]?) -> Void {
+    func logInLogout() -> Void {
         // if we're already logged in, go to reachable (logged out). If not, go to logged in
         DispatchQueue.main.async {
             self.phoneState = self.phoneState == .loggedIn ? .reachable : .loggedIn

@@ -41,16 +41,22 @@ struct LoginView: View {
             TextField("Enter Password", text: $messageText)
                 .disabled(self.model.phoneState != .reachable)
             Button(action: {
+                // Do when in reachable state
                 if self.model.phoneState == .reachable, let session = self.model.session {
-                    // depending on state, send appropriate message?
                     session.sendMessage(["message" : self.messageText], replyHandler: { (reply) in
-                       // self.model.logInLogout(reply: reply)
-                       // print("received message from watch")
+                        // confirm that message was received on watch side
+                        if reply["message"] != nil {
+                            self.model.logInLogout()
+                        }
                     }, errorHandler: { (error) in
                         print(error.localizedDescription)
                     })
+                // Do when logged in
+                } else {
+                    messageText = ""
+                    self.model.logInLogout()
                 }
-                self.model.logInLogout(reply: nil)
+
             }) {
                 Text(self.model.phoneState == .loggedIn ? "Logout" : "Login")
             }
