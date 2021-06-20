@@ -38,6 +38,9 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
 
     init(session: WCSession = .default){
         super.init()
+        // must check if session is supported
+        // can only be supported if this is running on an iPhone
+        // sessions are NOT supported on iPad!
         if WCSession.isSupported() {
             self.session = session
             self.session?.delegate = self

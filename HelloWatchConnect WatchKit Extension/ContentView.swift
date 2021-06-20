@@ -11,7 +11,12 @@ struct ContentView: View {
     @ObservedObject var model = ViewModelWatch()
     var body: some View {
         VStack {
-            Text("Message received: ")
+            Text("Status:")
+                .font(.title2)
+            Text("\(self.model.watchState.description)")
+                .padding()
+            Text("Message: ")
+                .font(.title2)
             Text(self.model.messageText)
         }
     }

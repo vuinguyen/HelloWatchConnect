@@ -34,11 +34,12 @@ class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
     @Published var messageText = ""
 
     var session: WCSession
-    init(session: WCSession = .default){
+    init(session: WCSession = .default) {
         self.session = session
         super.init()
         self.session.delegate = self
         session.activate()
+        _ = isReachable()
     }
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
@@ -48,16 +49,9 @@ class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
     func sessionReachabilityDidChange(_ session: WCSession) {
         DispatchQueue.main.async {
             self.watchState = session.isReachable ? .reachable : .notreachable
+            self.messageText = ""
         }
     }
-
-    /*
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        DispatchQueue.main.async {
-            self.messageText = message["message"] as? String ?? "Unknown"
-        }
-    }
- */
 
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         DispatchQueue.main.async {
@@ -72,10 +66,15 @@ class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
                     replyHandler(message)
                 }
             }
-
-            //self.messageText = message["login"] as? String ?? "Unknown"
-            //replyHandler(message)
         }
     }
+}
 
+extension ViewModelWatch {
+    func isReachable() -> Bool {
+        DispatchQueue.main.async {
+            self.watchState = self.session.isReachable ? .reachable : .notreachable
+        }
+        return session.isReachable
+    }
 }

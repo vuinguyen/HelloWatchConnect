@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack(alignment: .center) {
-            Text("Status: ")
+            Text("Status:")
                 .font(.title)
             Text("\(self.model.phoneState.description)")
                 .padding()
